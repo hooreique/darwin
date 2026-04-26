@@ -17,7 +17,10 @@
         }
         ./darwin-configuration.nix
       ];
-      specialArgs = { inherit inputs; };
+      specialArgs = {
+        inherit inputs;
+        main-username = "song";
+      };
     };
   };
 }
