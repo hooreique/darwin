@@ -1,13 +1,10 @@
-{ inputs, main-username, ... }:
 {
-  environment.systemPackages = [ ];
-  nix.enable = false;
-  nix.settings.experimental-features = "nix-command flakes";
-  system.configurationRevision = inputs.self.rev or inputs.self.dirtyRev or null;
   system.stateVersion = 6;
 
+  # For Determinate Nix
+  nix.enable = false;
   environment.etc."nix/nix.custom.conf".text = ''
-    trusted-users = ${main-username}
+    trusted-users = root
 
     extra-substituters = https://hooreique.cachix.org
     extra-trusted-substituters = https://hooreique.cachix.org
@@ -16,6 +13,10 @@
     extra-substituters = https://cache.numtide.com
     extra-trusted-substituters = https://cache.numtide.com
     extra-trusted-public-keys = niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g=
+
   '';
+
+  environment.systemPackages = [ ];
+
   security.pam.services.sudo_local.touchIdAuth = true;
 }

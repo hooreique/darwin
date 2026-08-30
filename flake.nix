@@ -7,20 +7,20 @@
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = inputs: let
-    hostname = "hoomac";
-  in {
-    darwinConfigurations.${hostname} = inputs.nix-darwin.lib.darwinSystem {
-      modules = [
-        {
-          nixpkgs.hostPlatform = "aarch64-darwin";
-        }
-        ./darwin-configuration.nix
-      ];
-      specialArgs = {
-        inherit inputs;
-        main-username = "song";
+  outputs =
+    { self, nix-darwin, ... }:
+    let
+      hostname = "hoomac";
+    in
+    {
+      darwinConfigurations.${hostname} = nix-darwin.lib.darwinSystem {
+        modules = [
+          {
+            nixpkgs.hostPlatform = "aarch64-darwin";
+            system.configurationRevision = self.rev or self.dirtyRev or null;
+          }
+          ./darwin-configuration.nix
+        ];
       };
     };
-  };
 }
