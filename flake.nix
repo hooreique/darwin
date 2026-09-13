@@ -1,24 +1,21 @@
 {
   description = "nix-darwin system configuration of hoomac";
 
-  inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    nix-darwin.url = "github:nix-darwin/nix-darwin/master";
-    nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
-  };
+  inputs.nix-darwin.url = "https://flakehub.com/f/nix-darwin/nix-darwin/0";
+  inputs.determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
 
   outputs =
-    { self, nix-darwin, ... }:
+    { nix-darwin, determinate, ... }:
     let
+      system = "aarch64-darwin";
       hostname = "hoomac";
     in
     {
       darwinConfigurations.${hostname} = nix-darwin.lib.darwinSystem {
+        inherit system;
         modules = [
-          {
-            nixpkgs.hostPlatform = "aarch64-darwin";
-            system.configurationRevision = self.rev or self.dirtyRev or null;
-          }
+          determinate.darwinModules.default
+          ./determinate.nix
           ./darwin-configuration.nix
         ];
       };
